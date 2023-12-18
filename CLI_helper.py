@@ -8,7 +8,7 @@ from datetime import datetime
 logging.basicConfig(filename="hilinkapitest.log", format='%(asctime)s --  %(message)s', level=logging.DEBUG, datefmt="%Y-%m-%d %I:%M:%S %p:%Z")
 
 
-webUI=webui("E", "192.168.10.14", "admin",  'Labuga21!!!!'  , logger=logging)
+webUI=webui("E", "192.168.10.14", "admin",  'Labuga21!!!!'  , logger=logging, scheme='https')
 
 webUI.start()
 

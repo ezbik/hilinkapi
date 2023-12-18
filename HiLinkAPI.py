@@ -46,11 +46,13 @@ class webui(Thread):
     :param    username:     Username if authentication required
     :param    password:     Password if authentication required
     :param    logger:    Logger object if using already configured :class:`logging.Logger`
+    :param    scheme:    how to access the modem, http or https
     :type    url:    string
     :type    host:    string
     :type    username:    string, defaults to None
     :type    password:    string, defaults to None
     :type    logger:    :class:`logging.Logger`, defaults to None
+    :type    scheme:    string
     """
     
     errorCodes = {
@@ -96,7 +98,7 @@ class webui(Thread):
         125003: "ERROR_WRONG_SESSION_TOKEN",
     }
 
-    def __init__(self, modemname, host, username=None, password=None, logger=None, httptimeout=10):
+    def __init__(self, modemname, host, username=None, password=None, logger=None, httptimeout=10, scheme='http'):
         """
         Initialize webui
         """
@@ -111,7 +113,7 @@ class webui(Thread):
         else:
             self.logger = logger
         # build http host URL
-        self._httpHost = f"https://{self._host}"
+        self._httpHost = f"{scheme}://{self._host}"
         # timeout for a HTTP call (seconds)
         self._HTTPcallTimeOut = httptimeout
         # variables required for webui session

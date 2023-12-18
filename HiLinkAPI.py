@@ -1,6 +1,7 @@
 import logging
 from threading import Thread
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import xmltodict
 import uuid
 import base64
@@ -12,6 +13,8 @@ from binascii import hexlify
 from collections import OrderedDict
 from bs4 import BeautifulSoup
 from datetime import datetime
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 class hilinkException(Exception):
@@ -108,7 +111,7 @@ class webui(Thread):
         else:
             self.logger = logger
         # build http host URL
-        self._httpHost = f"http://{self._host}"
+        self._httpHost = f"https://{self._host}"
         # timeout for a HTTP call (seconds)
         self._HTTPcallTimeOut = httptimeout
         # variables required for webui session
@@ -263,7 +266,7 @@ class webui(Thread):
             cookies = self.buildCookies()
         # request
         try:
-            _response = requests.get(f"{self._httpHost}{endpoint}", cookies=cookies, timeout=self._HTTPcallTimeOut)
+            _response = requests.get(f"{self._httpHost}{endpoint}", cookies=cookies, timeout=self._HTTPcallTimeOut, verify=False)
             self.processHTTPHeaders(_response)
             return _response
         except Exception as e:
@@ -291,7 +294,7 @@ class webui(Thread):
             cookies = self.buildCookies()
         # request
         try:
-            _response = requests.post(f"{self._httpHost}{endpoint}", data=postBody, cookies=cookies, headers=headers, timeout=self._HTTPcallTimeOut)
+            _response = requests.post(f"{self._httpHost}{endpoint}", data=postBody, cookies=cookies, headers=headers, timeout=self._HTTPcallTimeOut, verify=False)
             self.processHTTPHeaders(_response)
             return  _response
         except Exception as e:
@@ -378,24 +381,27 @@ class webui(Thread):
         ###############################################################
         ################## Authentication required check ##############
         # common API endpoint for webui version 10,17 & 21
-        try:
-            response = self.httpGet("/api/user/hilink_login")
-            hilinkLogin = xmltodict.parse(response.text)
-            if "response" in hilinkLogin:
-                if int(hilinkLogin['response']['hilink_login']) == 0:
-                    # wingles always comes with authentication even hilink_login==0
-                    if str(self._deviceClassify).upper() == "WINGLE" or str(self._deviceClassify).upper() == "MOBILE-WIFI":
-                        self._loginRequired = True
-                    else:
-                        self._loginRequired = False
-                elif int(hilinkLogin['response']['hilink_login']) == 1:
-                    self._loginRequired = True
-            else:
-                self.sessionErrorCheck(hilinkLogin)
-                raise hilinkException(self._modemname, "Invalid response while getting user hilink state")
-        except Exception as e:
-            self.logger.error(e)
-            raise hilinkException(self._modemname, "Failed to get user login state")   
+#        try:
+#            response = self.httpGet("/api/user/hilink_login")
+#            hilinkLogin = xmltodict.parse(response.text)
+#            if "response" in hilinkLogin:
+#                if int(hilinkLogin['response']['hilink_login']) == 0:
+#                    # wingles always comes with authentication even hilink_login==0
+#                    if str(self._deviceClassify).upper() == "WINGLE" or str(self._deviceClassify).upper() == "MOBILE-WIFI":
+#                        self._loginRequired = True
+#                    else:
+#                        self._loginRequired = False
+#                elif int(hilinkLogin['response']['hilink_login']) == 1:
+#                    self._loginRequired = True
+#            else:
+#                self.sessionErrorCheck(hilinkLogin)
+#                raise hilinkException(self._modemname, "Invalid response while getting user hilink state")
+#        except Exception as e:
+#            self.logger.error(e)
+#            raise hilinkException(self._modemname, "Failed to get user login state")   
+        self._loginRequired = True
+#                    elif str(self._deviceClassify).upper() == "CPE":
+#                        self._loginRequired = True
         #############Authentication required check end#################
         
     def sessionErrorCheck(self, responseDict):

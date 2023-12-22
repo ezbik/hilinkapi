@@ -44,7 +44,6 @@ def main():
     try:    action=sys.argv[4]
     except: usage()
 
-
     allowed_actions=[ "noop", "dump", "list_sms", "reboot", "data_on", "data_off", "reset_ip", "mode_auto", "mode_4g" ]
 
     if not action in allowed_actions:
@@ -81,15 +80,15 @@ def main():
 
     print("= Logged in")
 
-    if  action == "dump"         : dump(ctx)
-    elif action == "noop"   : pass 
+    if  action == "dump"        : dump(ctx)
+    elif action == "noop"       : pass 
     elif action == "list_sms"   : list_sms(ctx)
     elif action == "reboot"     : reboot(ctx)
     elif action == "data_on"    : data_on(ctx)
     elif action == "data_off"   : data_off(ctx)
     elif action == "reset_ip"   : reset_ip(ctx)
-    elif action == "mode_auto"   : mode_auto(ctx)
-    elif action == "mode_4g"   : mode_4g(ctx)
+    elif action == "mode_auto"  : mode_auto(ctx)
+    elif action == "mode_4g"    : mode_4g(ctx)
     else:
         usage()
 

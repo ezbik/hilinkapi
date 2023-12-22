@@ -53,13 +53,13 @@ def main():
     #webUI=webui("mymodem", "192.168.10.18", "admin",  'Labuga21!!!!'  , logger=logging, scheme='https')
     webUI=webui("mymodem", ip , login , password , logger=logging, scheme='https')
     webUI.start()
-    max_attempts=2
+    max_attempts=6
     i=0
 
     while not webUI.getValidSession():
         sleep(1)
         i+=1
-        print(f"= logging in, attempt {i}/{max_attempts}")
+        print(f"= logging in, attempt {i} of max_attempts {max_attempts}")
         # check for active errors
         if webUI.getActiveError() is not None:
                error = webUI.getActiveError()
@@ -80,15 +80,15 @@ def main():
 
     print("= Logged in")
 
-    if  action == "dump"        : dump(ctx)
+    if  action == "dump"        : dump(webUI)
     elif action == "noop"       : pass 
-    elif action == "list_sms"   : list_sms(ctx)
-    elif action == "reboot"     : reboot(ctx)
-    elif action == "data_on"    : data_on(ctx)
-    elif action == "data_off"   : data_off(ctx)
-    elif action == "reset_ip"   : reset_ip(ctx)
-    elif action == "mode_auto"  : mode_auto(ctx)
-    elif action == "mode_4g"    : mode_4g(ctx)
+    elif action == "list_sms"   : list_sms(webUI)
+    elif action == "reboot"     : reboot(webUI)
+    elif action == "data_on"    : data_on(webUI)
+    elif action == "data_off"   : data_off(webUI)
+    elif action == "reset_ip"   : reset_ip(webUI)
+    elif action == "mode_auto"  : mode_auto(webUI)
+    elif action == "mode_4g"    : mode_4g(webUI)
     else:
         usage()
 

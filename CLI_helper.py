@@ -42,9 +42,23 @@ def wait_data(webUI):
 
 def mode_auto(webUI):
     print("=>Auto")
+    ret = webUI.setNetwokModes("AUTO", "WCDMA")
+    print(f"Network mode setting = {ret}")
+    ret = webUI.switchNetworMode(True)
+    print(f"Switching = {ret}")
 
 def mode_4g(webUI):
     print("=>4g")
+    ret = webUI.setNetwokModes("LTE", "WCDMA")
+    print(f"Network mode setting = {ret}")
+    ret = webUI.switchNetworMode(True)
+    print(f"Switching = {ret}")
+
+def reset_ip(webUI):
+    print("=>Reset IP")
+    mode_4g(webUI)
+    mode_auto(webUI)
+    wait_data(webUI)
 
 def reboot(webUI):
     print("=>Reboot")

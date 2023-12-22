@@ -384,7 +384,6 @@ class webui(Thread):
         ################## Authentication required check ##############
         # common API endpoint for webui version 10,17 & 21
         try:
-            print(self._deviceClassify)
             response = self.httpGet("/api/user/hilink_login")
             hilinkLogin = xmltodict.parse(response.text)
             if "response" in hilinkLogin:

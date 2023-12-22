@@ -80,6 +80,9 @@ def dump(webUI):
     print(f"WAN_IP\t:{webUI.getWANIP()}")
     print(f"CELLOP\t:{webUI.getNetwork()}")
 
+    ret=HiLinkGET(webUI, "/api/monitoring/status")
+    print(ret)
+
 def usage():
     print(sys.argv[0] +" IP LOGIN PW <noop|dump|list_sms|reboot|data_on|data_off|reset_ip|mode_auto|mode_4g")
     sys.exit(1)

@@ -17,9 +17,28 @@ def logout(webUI):
 
 def data_on(webUI):
     print(f"= Data ON\n{webUI.switchConnection(True)}")
+    wait_data(webUI)
 
 def data_off(webUI):
     print(f"= Data OFF\n{webUI.switchConnection(False)}")
+
+def wait_data(webUI):
+    print("=> Wait data")
+    max_attempts=20
+    i=0
+    while True:
+        i+=1
+        webUI.queryWANIP()
+        print("= attempt "+str(i) )
+        ip=webUI.getWANIP()
+        #print(ip)
+        if ip:
+            print("= got Data "+ip)
+            return True
+        else:
+            sleep(1)
+    print("= no data, give up")
+    return False
 
 def mode_auto(webUI):
     print("=>Auto")
@@ -111,3 +130,5 @@ def main():
     logout(webUI)
 
 main()
+
+# H112-370

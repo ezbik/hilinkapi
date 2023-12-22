@@ -1412,7 +1412,7 @@ class webui(Thread):
                 # Use requests.post as no return and trigger of request timeout error
                 cookies = self.buildCookies()
                 try:
-                    requests.post(f"{self._httpHost}/api/device/control", data=xml_body, cookies=cookies, headers=headers, timeout=3)
+                    requests.post(f"{self._httpHost}/api/device/control", data=xml_body, cookies=cookies, headers=headers, timeout=3, verify=False)
                 except Exception as e:
                     self.logger.debug(f"Reboot call exception found - {e}")
                 #return

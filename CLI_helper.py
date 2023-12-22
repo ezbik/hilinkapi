@@ -15,6 +15,22 @@ def logout(webUI):
          print(f"= Waiting for stop")
          sleep(1)
 
+def data_on(webUI):
+    print(f"= Data ON\n{webUI.switchConnection(True)}")
+
+def data_off(webUI):
+    print(f"= Data OFF\n{webUI.switchConnection(False)}")
+
+def mode_auto(webUI):
+    print("=>Auto")
+
+def mode_4g(webUI):
+    print("=>4g")
+
+def reboot(webUI):
+    print("=>Reboot")
+    webUI.reboot()
+
 def dump(webUI):
     print("= dump:")
     webUI.queryDeviceInfo()

@@ -63,7 +63,8 @@ def reset_ip(webUI):
 
 def reboot(webUI):
     print("=>Reboot")
-    webUI.reboot()
+    ret=webUI.reboot()
+    print(ret)
 
 def dump(webUI):
     print("= dump:")

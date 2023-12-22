@@ -674,6 +674,51 @@ class webui(Thread):
     ####################################################
     ###################### Query methods ###############
     ####################################################
+
+    def HiLinkGET(self, PATH):
+        """
+        This method will query device information and update existing.
+        
+        If session need a refresh :meth:`~validateSession` before calling device information API end point.
+        
+        :return:   Return querying device info succeed or not
+        :rtype:    boolean
+        """
+        # if session is not refreshed validate and refresh session again
+        if not self._sessionRefreshed:
+            self.validateSession()
+        # wait if in an operation
+        while self._inOperation:
+            time.sleep(0.5)            
+        # if session is valid query device info
+        if self._validSession:
+            try:
+                ######### query device info ##########
+                headers = {'X-Requested-With':'XMLHttpRequest'}
+                response = self.httpGet(PATH, headers=headers)
+                ret = xmltodict.parse(response.text)
+                if "response" in ret:
+                    # invalidate refresh
+                    self._sessionRefreshed = False
+                    # reset if theres any active error
+                    self.resetActiveErrorCode()
+                    # return success
+                    return ret
+                else:
+                    self._sessionRefreshed = False
+                    return False
+                ####### query device info end ########
+            except Exception as e:
+                # invalidate refresh
+                self._sessionRefreshed = False
+                self.logger.error(e)
+                self.logger.error(f"{self._modemname} Failed to get {PATH}")
+                return False
+        else:
+            # invalidate refresh
+            self._sessionRefreshed = False
+            self.logger.error(f"{self._modemname} Failed to get {PATH}")
+            return False
         
     def queryDeviceInfo(self):
         """

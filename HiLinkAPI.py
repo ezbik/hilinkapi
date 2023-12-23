@@ -673,6 +673,60 @@ class webui(Thread):
     ####################################################
     ###################### Query methods ###############
     ####################################################
+    def HiLinkPOST2(self, PATH, xml_body):
+        """
+        Switch on or off data connection based on :attr:`status`.
+        
+        :param    status:    Either set status of the connection On or Off
+        :type    status:    bool
+                        
+        :return:   Return either requested connection switching succeeded or failed
+        :rtype:    bool
+        """
+        # if session is not refreshed validate and refresh session again
+        if not self._sessionRefreshed:
+            self.validateSession()
+        # wait if in an operation
+        while self._inOperation:
+            time.sleep(0.5)            
+        # if session is valid start switching data connection
+        if self._validSession:
+            try:
+                # data switch
+                headers = {
+                'X-Requested-With':'XMLHttpRequest',
+                '__RequestVerificationToken': self._RequestVerificationToken
+                }
+                # call 
+                self.logger.info(f"calling POST {PATH}")
+                response = self.httpPost(PATH, xml_body, cookies=None, headers=headers)
+                ret = xmltodict.parse(response.text)
+                if "response" in ret:
+                    self.logger.info(f"POST OK {PATH}")
+                    # invalidate refresh
+                    self._sessionRefreshed = False
+                    # reset if theres any active error
+                    self.resetActiveErrorCode()
+                    # return success
+                    return ret
+                else:
+                    self._sessionRefreshed = False
+                    self.sessionErrorCheck(dataswitchInfo)
+                    self.logger.error(f"POST ERR {PATH}")
+                    # Return failed
+                    return False
+                ####### switching data connection end ########
+            except Exception as e:
+                # invalidate refresh
+                self._sessionRefreshed = False
+                self.logger.error(e)
+                self.logger.error(f"POST ERR2 {PATH}")
+                return False
+        else:
+            # invalidate refresh
+            self._sessionRefreshed = False
+            self.logger.error(f"POST ERR3 {PATH}")
+            return False
 
     def HiLinkGET(self, PATH):
         """

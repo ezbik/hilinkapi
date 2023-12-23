@@ -4,6 +4,7 @@ from HiLinkAPI import webui
 
 import logging
 import sys
+import json
 from time import sleep, time
 from datetime import datetime
 
@@ -80,8 +81,51 @@ def dump(webUI):
     print(f"WAN_IP\t:{webUI.getWANIP()}")
     print(f"CELLOP\t:{webUI.getNetwork()}")
 
-    ret=HiLinkGET(webUI, "/api/monitoring/status")
-    print(ret)
+    for PATH in [ 
+        "/api/monitoring/status", 
+        "/api/device/information",
+        "/api/device/basic_information",
+        "/api/dialup/mobile-dataswitch",
+        "/api/device/signal",
+        "/api/dialup/connection",
+        "/api/dialup/profiles",
+        "/api/monitoring/status",
+        "/api/net/current-plmn",
+        "/api/net/net-mode",
+        "/api/net/net-mode-list",
+        "/api/net/network",
+        "/api/wlan/basic-settings",
+        ] :
+        print(f"= {PATH}")
+        ret=webUI.HiLinkGET(PATH)
+        print(json.dumps(ret, indent = 4) )
+
+def list_sms(webUI):
+    print("=> List SMS")
+    PATH="/api/sms/sms-list"
+    count="50"
+    boxtype="1"
+
+    xml_body = """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <request>
+            <PageIndex>1</PageIndex>
+            <ReadCount>{}</ReadCount>
+            <BoxType>{}</BoxType>
+            <SortType>0</SortType>
+            <Ascending>0</Ascending>
+            <UnreadPreferred>1</UnreadPreferred>
+    </request>
+    """.format(
+        count, boxtype
+    )
+
+    webUI.queryDeviceInfo()
+    webUI.queryDeviceInfo()
+    ret=webUI.HiLinkPOST2(PATH, xml_body)
+    print("--JSON start--")
+    print(json.dumps(ret, indent = 4) )
+    print("--JSON end--")
 
 def usage():
     print(sys.argv[0] +" IP LOGIN PW <noop|dump|list_sms|reboot|data_on|data_off|reset_ip|mode_auto|mode_4g")

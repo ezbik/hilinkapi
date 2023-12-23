@@ -382,28 +382,28 @@ class webui(Thread):
             raise hilinkException(self._modemname, "Failed to get device info")
         ###############################################################
         ################## Authentication required check ##############
+        if str(self._deviceClassify).upper() == "CPE":
+            self._loginRequired = True
+        else:
         # common API endpoint for webui version 10,17 & 21
-        try:
-            response = self.httpGet("/api/user/hilink_login")
-            hilinkLogin = xmltodict.parse(response.text)
-            if "response" in hilinkLogin:
-                if int(hilinkLogin['response']['hilink_login']) == 0:
-                    # wingles always comes with authentication even hilink_login==0
-                    if str(self._deviceClassify).upper() == "WINGLE" or str(self._deviceClassify).upper() == "MOBILE-WIFI":
+            try:
+                response = self.httpGet("/api/user/hilink_login")
+                hilinkLogin = xmltodict.parse(response.text)
+                if "response" in hilinkLogin:
+                    if int(hilinkLogin['response']['hilink_login']) == 0:
+                        # wingles always comes with authentication even hilink_login==0
+                        if str(self._deviceClassify).upper() == "WINGLE" or str(self._deviceClassify).upper() == "MOBILE-WIFI":
+                            self._loginRequired = True
+                        else:
+                            self._loginRequired = False
+                    elif int(hilinkLogin['response']['hilink_login']) == 1:
                         self._loginRequired = True
-                    else:
-                        self._loginRequired = False
-                elif int(hilinkLogin['response']['hilink_login']) == 1:
-                    self._loginRequired = True
-            else:
-                self.sessionErrorCheck(hilinkLogin)
-                raise hilinkException(self._modemname, "Invalid response while getting user hilink state")
-        except Exception as e:
-            if str(self._deviceClassify).upper() == "CPE":
-                self._loginRequired = True
-            else:
-                self.logger.error(e)
-                raise hilinkException(self._modemname, "Failed to get user login state")   
+                else:
+                    self.sessionErrorCheck(hilinkLogin)
+                    raise hilinkException(self._modemname, "Invalid response while getting user hilink state")
+            except Exception as e:
+                    self.logger.error(e)
+                    raise hilinkException(self._modemname, "Failed to get user login state")   
         #############Authentication required check end#################
         
     def sessionErrorCheck(self, responseDict):

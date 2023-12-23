@@ -2,7 +2,6 @@
 
 from HiLinkAPI import webui
 
-import logging
 import sys
 import json
 from time import sleep, time
@@ -146,9 +145,14 @@ def main():
     if not action in allowed_actions:
         usage()
 
-    logging.basicConfig(filename="hilinkapitest.log", format='%(asctime)s --  %(message)s', level=logging.DEBUG, datefmt="%Y-%m-%d %I:%M:%S %p:%Z")
-    #webUI=webui("mymodem", "192.168.10.18", "admin",  'Labuga21!!!!'  , logger=logging, scheme='https')
-    webUI=webui("mymodem", ip , login , password , logger=logging, scheme='https')
+    save_logs=False
+    if save_logs:
+        import logging
+        logging.basicConfig(filename="hilinkapitest.log", format='%(asctime)s --  %(message)s', level=logging.DEBUG, datefmt="%Y-%m-%d %I:%M:%S %p:%Z")
+        webUI=webui("mymodem", ip , login , password , logger=logging, scheme='https')
+    else:
+        webUI=webui("mymodem", ip , login , password , logger=None , scheme='https')
+
     webUI.start()
     max_attempts=6
     i=0

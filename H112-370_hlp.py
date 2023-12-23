@@ -118,11 +118,9 @@ def list_sms(webUI):
         count, boxtype
     )
 
-    webUI.queryDeviceInfo()
-    webUI.queryDeviceInfo()
     ret=webUI.HiLinkPOST2(PATH, xml_body)
     print("--JSON start--")
-    print(json.dumps(ret, indent = 4) )
+    print(json.dumps(ret["response"], indent = 4) )
     print("--JSON end--")
 
 def usage():

@@ -119,8 +119,31 @@ def list_sms(webUI):
     )
 
     ret=webUI.HiLinkPOST2(PATH, xml_body)
+    
+    new_sms=[]
+    count=int(ret["response"]["Count"])
+
+    if count==1:
+        i=ret["response"]["Messages"]["Message"]
+        sms_el={}
+        sms_el["Content"]=i["Content"]
+        sms_el["Index"]=i["Index"]
+        sms_el["Date"]=i["Date"]
+        sms_el["Phone"]=i["Phone"]
+        new_sms.append(sms_el)
+    elif count>1:
+        all_sms=ret["response"]["Messages"]["Message"]
+        for i in all_sms:
+            sms_el={}
+            sms_el["Content"]=i["Content"]
+            sms_el["Index"]=i["Index"]
+            sms_el["Date"]=i["Date"]
+            sms_el["Phone"]=i["Phone"]
+            new_sms.append(sms_el)
+    
+        
     print("--JSON start--")
-    print(json.dumps(ret["response"], indent = 4) )
+    print(json.dumps(new_sms, indent = 4) )
     print("--JSON end--")
 
 def usage():

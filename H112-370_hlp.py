@@ -82,7 +82,6 @@ def dump(webUI):
     print(f"CELLOP\t:{webUI.getNetwork()}")
 
     for PATH in [ 
-        "/api/monitoring/status", 
         "/api/device/information",
         "/api/device/basic_information",
         "/api/dialup/mobile-dataswitch",

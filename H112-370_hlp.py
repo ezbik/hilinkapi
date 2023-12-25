@@ -25,7 +25,7 @@ def data_off(webUI):
 
 def wait_data(webUI):
     print("=> Wait data")
-    max_attempts=20
+    max_attempts=10
     i=0
     while i<max_attempts:
         i+=1
@@ -147,7 +147,7 @@ def list_sms(webUI):
     print("--JSON end--")
 
 def usage():
-    print(sys.argv[0] +" IP LOGIN PW <noop|dump|list_sms|reboot|data_on|data_off|reset_ip|mode_auto|mode_4g>")
+    print(sys.argv[0] +" IP LOGIN PW <noop|dump|list_sms|reboot|data_on|data_off|reset_ip|mode_auto|mode_4g")
     sys.exit(1)
 
 def main():

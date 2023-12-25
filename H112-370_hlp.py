@@ -27,7 +27,7 @@ def wait_data(webUI):
     print("=> Wait data")
     max_attempts=20
     i=0
-    while True:
+    while i<max_attempts:
         i+=1
         webUI.queryWANIP()
         print("= attempt "+str(i) )
